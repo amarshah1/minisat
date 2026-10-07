@@ -1388,7 +1388,7 @@ void Solver::garbageCollect()
 std::vector<int> Solver::getCurrentModel() {
     std::vector<int> res; res.reserve(nVars());
     for (int i = 0; i < nVars(); i++) {
-        if (value(i) != Minisat::l_Undef) {
+        if (observed[i] && value(i) != Minisat::l_Undef) {
             res.push_back(Minisat::LitToint(Minisat::mkLit(i, value(i) == Minisat::l_False)));
         }
     }
