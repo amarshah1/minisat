@@ -45,7 +45,7 @@ public:
 
     // CaDiCal interface
 public:
-    bool set(const char *name, int val) { return false; }
+    bool set(const char *name, int val);
     bool limit(const char *arg, int val) { return false; }
     void terminate();
     int fixed(int lit) const;

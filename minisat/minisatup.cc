@@ -1,6 +1,8 @@
 #include "minisat/minisatup.h"
 #include "minisat/core/Solver.h"
 
+#include <string>
+
 namespace Minisat {
 
 class SolverInterface : public Solver {
@@ -75,6 +77,31 @@ public:
 
     // CaDiCaL interface
 public:
+    bool set(const char *name, int val) {
+        std::string n(name);
+        if (n == "verbosity") {
+            verbosity = val;
+        } else if (n == "ccmin-mode") {
+            ccmin_mode = val;
+        } else if (n == "phase-saving") {
+            phase_saving = val;
+        } else if (n == "luby") {
+            luby_restart = val != 0;
+        } else if (n == "rnd-init") {
+            rnd_init_act = val != 0;
+        } else if (n == "rnd-pol") {
+            rnd_pol = val != 0;
+        } else if (n == "rfirst") {
+            restart_first = val;
+        } else if (n == "min-learnts") {
+            min_learnts_lim = val;
+        } else if (n == "phase") {
+            Solver::phase = val != 0;
+        } else {
+            return false;
+        }
+        return true;
+    }
     void terminate() {
         interrupt();
     }
@@ -121,6 +148,7 @@ void Solver::remove_observed_var(int var) { return data->solver.remove_observed_
 bool Solver::is_decision(int lit) { return data->solver.is_decision(lit); }
 void Solver::phase(int lit) { return data->solver.phase(lit); }
 
+bool Solver::set(const char *name, int val) { return data->solver.set(name, val); }
 void Solver::terminate() { return data->solver.terminate(); }
 int Solver::fixed(int lit) const { return data->solver.fixed(lit); }
 bool Solver::trace_proof(const char *path) { return data->solver.trace_proof(path); }
