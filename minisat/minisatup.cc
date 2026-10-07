@@ -7,8 +7,9 @@ class SolverInterface : public Solver {
 private:
     void ensureVar(Var var) {
         while (var >= nVars()) {
-            newVar();
+            newVar(l_Undef, false);
         }
+        setDecisionVar(var, true);
     }
 
     // IPASIR interface
