@@ -81,6 +81,7 @@ Solver::Solver() :
   , luby_restart     (opt_luby_restart)
   , ccmin_mode       (opt_ccmin_mode)
   , phase_saving     (opt_phase_saving)
+  , phase            (false)
   , rnd_pol          (false)
   , rnd_init_act     (opt_rnd_init_act)
   , garbage_frac     (opt_garbage_frac)
@@ -151,7 +152,7 @@ Var Solver::newVar(lbool upol, bool dvar)
     activity .insert(v, rnd_init_act ? drand(random_seed) * 0.00001 : 0);
     seen     .insert(v, 0);
     seen_add .insert(v, 0);
-    polarity .insert(v, true);
+    polarity .insert(v, !phase);
     user_pol .insert(v, upol);
     decision .reserve(v);
     trail    .capacity(v+1);
