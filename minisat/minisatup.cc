@@ -54,6 +54,9 @@ public:
     void connect_external_propagator(MiniSatUP::ExternalPropagator *external_propagator) {
         Solver::connect_external_propagator(external_propagator);
     }
+    void disconnect_external_propagator() {
+        Solver::disconnect_external_propagator();
+    }
     void add_observed_var(int var) {
         ensureVar(intToVar(var));
         Solver::add_observed_var(var);
@@ -84,6 +87,9 @@ public:
     void connect_terminator(MiniSatUP::Terminator *terminator) {
         Solver::connect_terminator(terminator);
     }
+    void disconnect_terminator() {
+        Solver::connect_terminator(nullptr);
+    }
     void connect_learner(MiniSatUP::Learner *learner) {
         Solver::connect_learner(learner);
     }
@@ -107,6 +113,7 @@ int Solver::val(int lit) { return data->solver.val(lit); }
 bool Solver::failed(int lit) { return data->solver.failed(lit); }
 
 void Solver::connect_external_propagator(MiniSatUP::ExternalPropagator *external_propagator) { return data->solver.connect_external_propagator(external_propagator); }
+void Solver::disconnect_external_propagator() { return data->solver.disconnect_external_propagator(); }
 void Solver::add_observed_var(int var) { return data->solver.add_observed_var(var); }
 void Solver::remove_observed_var(int var) { return data->solver.remove_observed_var(var); }
 bool Solver::is_decision(int lit) { return data->solver.is_decision(lit); }
@@ -116,6 +123,7 @@ void Solver::terminate() { return data->solver.terminate(); }
 int Solver::fixed(int lit) const { return data->solver.fixed(lit); }
 bool Solver::trace_proof(const char *path) { return data->solver.trace_proof(path); }
 void Solver::connect_terminator(MiniSatUP::Terminator *terminator) { return data->solver.connect_terminator(terminator); }
+void Solver::disconnect_terminator() { return data->solver.disconnect_terminator(); }
 void Solver::connect_learner(MiniSatUP::Learner *learner) { return data->solver.connect_learner(learner); }
 void Solver::connect_fixed_listener(FixedAssignmentListener *fixed_listener) { return data->solver.connect_fixed_listener(fixed_listener); }
 
