@@ -41,9 +41,11 @@ public:
         }
     }
     int val(int lit) {
-        lbool value = modelValue(intToLit(lit));
-        assert(value != l_Undef);
-        return value == l_True ? lit : -lit;
+        Var v = intToVar(lit);
+        if (v >= model.size() || model[v] == l_Undef) {
+            return 0;
+        }
+        return modelValue(intToLit(lit)) == l_True ? lit : -lit;
     }
     bool failed(int lit) {
         return conflict.has(intToLit(-lit));
