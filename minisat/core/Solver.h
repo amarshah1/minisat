@@ -136,6 +136,7 @@ public:
     bool      luby_restart;
     int       ccmin_mode;         // Controls conflict clause minimization (0=none, 1=basic, 2=deep).
     int       phase_saving;       // Controls the level of phase saving (0=none, 1=limited, 2=full).
+    bool      phase;              // Initial phase of new variables (true = positive, false = negative).
     bool      rnd_pol;            // Use random polarities for branching heuristics.
     bool      rnd_init_act;       // Initialize variable activities with a small random value.
     double    garbage_frac;       // The fraction of wasted memory allowed before a garbage collection is triggered.
