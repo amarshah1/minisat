@@ -35,7 +35,7 @@ public:
     // IPASIR-UP interface
 public:
     void connect_external_propagator(MiniSatUP::ExternalPropagator *external_propagator);
-    // void disconnect_external_propagator();
+    void disconnect_external_propagator();
     void add_observed_var(int var);
     void remove_observed_var(int var);
     // void reset_observed_vars();
@@ -45,13 +45,13 @@ public:
 
     // CaDiCal interface
 public:
-    bool set(const char *name, int val) { return false; }
+    bool set(const char *name, int val);
     bool limit(const char *arg, int val) { return false; }
     void terminate();
     int fixed(int lit) const;
     bool trace_proof(const char *path);
     void connect_terminator(Terminator *terminator);
-    // void disconnect_terminator();
+    void disconnect_terminator();
     void connect_learner(Learner *learner);
     // void disconnect_learner();
     void connect_fixed_listener(FixedAssignmentListener *fixed_listener);

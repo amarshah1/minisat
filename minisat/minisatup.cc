@@ -1,14 +1,17 @@
 #include "minisat/minisatup.h"
 #include "minisat/core/Solver.h"
 
+#include <string>
+
 namespace Minisat {
 
 class SolverInterface : public Solver {
 private:
     void ensureVar(Var var) {
         while (var >= nVars()) {
-            newVar();
+            newVar(l_Undef, false);
         }
+        setDecisionVar(var, true);
     }
 
     // IPASIR interface
@@ -40,9 +43,11 @@ public:
         }
     }
     int val(int lit) {
-        lbool value = modelValue(intToLit(lit));
-        assert(value != l_Undef);
-        return value == l_True ? lit : -lit;
+        Var v = intToVar(lit);
+        if (v >= model.size() || model[v] == l_Undef) {
+            return 0;
+        }
+        return modelValue(intToLit(lit)) == l_True ? lit : -lit;
     }
     bool failed(int lit) {
         return conflict.has(intToLit(-lit));
@@ -52,6 +57,9 @@ public:
 public:
     void connect_external_propagator(MiniSatUP::ExternalPropagator *external_propagator) {
         Solver::connect_external_propagator(external_propagator);
+    }
+    void disconnect_external_propagator() {
+        Solver::disconnect_external_propagator();
     }
     void add_observed_var(int var) {
         ensureVar(intToVar(var));
@@ -69,6 +77,31 @@ public:
 
     // CaDiCaL interface
 public:
+    bool set(const char *name, int val) {
+        std::string n(name);
+        if (n == "verbosity") {
+            verbosity = val;
+        } else if (n == "ccmin-mode") {
+            ccmin_mode = val;
+        } else if (n == "phase-saving") {
+            phase_saving = val;
+        } else if (n == "luby") {
+            luby_restart = val != 0;
+        } else if (n == "rnd-init") {
+            rnd_init_act = val != 0;
+        } else if (n == "rnd-pol") {
+            rnd_pol = val != 0;
+        } else if (n == "rfirst") {
+            restart_first = val;
+        } else if (n == "min-learnts") {
+            min_learnts_lim = val;
+        } else if (n == "phase") {
+            Solver::phase = val != 0;
+        } else {
+            return false;
+        }
+        return true;
+    }
     void terminate() {
         interrupt();
     }
@@ -82,6 +115,9 @@ public:
     }
     void connect_terminator(MiniSatUP::Terminator *terminator) {
         Solver::connect_terminator(terminator);
+    }
+    void disconnect_terminator() {
+        Solver::connect_terminator(nullptr);
     }
     void connect_learner(MiniSatUP::Learner *learner) {
         Solver::connect_learner(learner);
@@ -106,15 +142,18 @@ int Solver::val(int lit) { return data->solver.val(lit); }
 bool Solver::failed(int lit) { return data->solver.failed(lit); }
 
 void Solver::connect_external_propagator(MiniSatUP::ExternalPropagator *external_propagator) { return data->solver.connect_external_propagator(external_propagator); }
+void Solver::disconnect_external_propagator() { return data->solver.disconnect_external_propagator(); }
 void Solver::add_observed_var(int var) { return data->solver.add_observed_var(var); }
 void Solver::remove_observed_var(int var) { return data->solver.remove_observed_var(var); }
 bool Solver::is_decision(int lit) { return data->solver.is_decision(lit); }
 void Solver::phase(int lit) { return data->solver.phase(lit); }
 
+bool Solver::set(const char *name, int val) { return data->solver.set(name, val); }
 void Solver::terminate() { return data->solver.terminate(); }
 int Solver::fixed(int lit) const { return data->solver.fixed(lit); }
 bool Solver::trace_proof(const char *path) { return data->solver.trace_proof(path); }
 void Solver::connect_terminator(MiniSatUP::Terminator *terminator) { return data->solver.connect_terminator(terminator); }
+void Solver::disconnect_terminator() { return data->solver.disconnect_terminator(); }
 void Solver::connect_learner(MiniSatUP::Learner *learner) { return data->solver.connect_learner(learner); }
 void Solver::connect_fixed_listener(FixedAssignmentListener *fixed_listener) { return data->solver.connect_fixed_listener(fixed_listener); }
 
